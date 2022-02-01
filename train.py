@@ -35,5 +35,14 @@ def train_unet(X_train, Y_train, csv_path, model_path, model):
 
     callbacks = []
     callbacks.append(CSVLogger(csv_path))
+    model_checkpoint_callback = ModelCheckpoint(
+        filepath=model_path,
+        save_weights_only=True,
+        monitor='loss',
+        mode='min',
+        save_freq='epoch',
+        save_best_only=False,
+    )
+    callbacks.append(model_checkpoint_callback)
     history = model.fit(train_generator,steps_per_epoch=32, epochs=NUM_EPOCH, verbose=1, callbacks=callbacks)
     model.save_weights(model_path)
